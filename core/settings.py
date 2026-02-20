@@ -53,14 +53,17 @@ TEMPLATES = [
     },
 ]
 
-AZURE_HOME = os.environ.get('HOME')
+IF_AZURE = os.path.exists('/home/site')
 
-if AZURE_HOME:
-    # Forzamos la ruta a la carpeta persistente /home
-    # Puedes guardarlo directamente en /home o en /home/data
-    DB_PATH = os.path.join(AZURE_HOME, 'db.sqlite3')
+if IF_AZURE:
+    # Olvidate de os.environ.get('HOME'), vamos directo al grano
+    # Creamos la carpeta data si no existe para que no chille
+    if not os.path.exists('/home/data'):
+        os.makedirs('/home/data', exist_ok=True)
+    
+    DB_PATH = '/home/data/db.sqlite3'
 else:
-    # Ruta estándar para desarrollo local
+    # Desarrollo local
     DB_PATH = BASE_DIR / 'db.sqlite3'
 
 DATABASES = {
